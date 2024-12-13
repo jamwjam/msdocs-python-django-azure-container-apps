@@ -1,6 +1,5 @@
 import os
 from .settings import *
-from .get_token import get_token
 
 # Configure allowed host names that can be served and trusted origins for Azure Container Apps.
 ALLOWED_HOSTS = ['.azurecontainerapps.io'] if 'RUNNING_IN_PRODUCTION' in os.environ else []
@@ -16,13 +15,14 @@ SECRET_KEY = os.getenv('AZURE_SECRET_KEY')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Configure database connection for Azure PostgreSQL Flexible server instance.
+# AZURE_POSTGRESQL_HOST is the full URL.
+# AZURE_POSTGRESQL_USERNAME is just name without @server-name.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['DBNAME'],
-        'HOST': os.environ['DBHOST'] + ".postgres.database.azure.com",
-        'USER': os.environ['DBUSER'],
-        'PASSWORD': 'set with get_token()'
+        'NAME': os.environ['AZURE_POSTGRESQL_DATABASE'],
+        'HOST': os.environ['AZURE_POSTGRESQL_HOST'],
+        'USER': os.environ['AZURE_POSTGRESQL_USERNAME'],
+        'PASSWORD': os.environ['AZURE_POSTGRESQL_PASSWORD'], 
     }
 }
-get_token()

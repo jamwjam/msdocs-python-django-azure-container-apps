@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
 from requests import RequestException, exceptions
+from azureproject.get_token import get_token
 
 from restaurant_review.models import Restaurant, Review
 
@@ -14,12 +15,14 @@ from restaurant_review.models import Restaurant, Review
 
 def index(request):
     print('Request for index page received')
+    get_token()
     restaurants = Restaurant.objects.annotate(avg_rating=Avg('review__rating')).annotate(review_count=Count('review'))
     return render(request, 'restaurant_review/index.html', {'restaurants': restaurants })
 
 
 def details(request, id):
     print('Request for restaurant details page received')
+    get_token()
 
     try: 
         restaurant = Restaurant.objects.annotate(avg_rating=Avg('review__rating')).annotate(review_count=Count('review')).get(pk=id)
@@ -34,6 +37,8 @@ def create_restaurant(request):
     return render(request, 'restaurant_review/create_restaurant.html')
 
 def add_restaurant(request):
+    get_token()
+
     try:
         name = request.POST['restaurant_name']
         street_address = request.POST['street_address']
@@ -54,6 +59,7 @@ def add_restaurant(request):
         return HttpResponseRedirect(reverse('details', args=(restaurant.id,)))
 
 def add_review(request, id):
+    get_token()
     try: 
         restaurant = Restaurant.objects.annotate(avg_rating=Avg('review__rating')).annotate(review_count=Count('review')).get(pk=id)
     except Restaurant.DoesNotExist:
