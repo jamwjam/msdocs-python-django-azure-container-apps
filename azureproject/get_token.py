@@ -9,7 +9,7 @@ def get_token():
         # Azure hosted PostgreSQL server, refresh token that becomes password.
         # Get token for Azure Database for PostgreSQL
         azure_credential = DefaultAzureCredential()
-        token = azure_credential.get_token("https://ossrdbms-aad.database.windows.net")
+        token = azure_credential.get_token("https://ossrdbms-aad.database.windows.net/.default")
         conf.settings.DATABASES['default']['PASSWORD'] = token.token
     else:
         # Local PostgreSQL server, read password from environment variable.
