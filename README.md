@@ -61,4 +61,4 @@ The steps to do this are covered more completely in the tutorial [Deploy a Pytho
 1. Migrate and create database schema by connecting to the container app and issuing the `python manage.py migrate` command.
 1. Configure continuous deployment.
 
-See the [create_resources.sh](./create_resources.sh) Bash script for automating the creation of these steps.
+See the [create_resources.sh](./create_resources.sh) Bash script for automating the creation of these steps. For best results, run the script in Azure Cloud Shell.
