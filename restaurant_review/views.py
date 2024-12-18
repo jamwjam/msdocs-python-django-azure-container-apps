@@ -1,13 +1,14 @@
-import uuid
 import os
+import uuid
+
+from azureproject.get_token import get_token
+from django.contrib import messages
+from django.db.models import Avg, Count
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
-from django.db.models import Avg, Count
 from django.urls import reverse
 from django.utils import timezone
-from django.contrib import messages
 from requests import RequestException, exceptions
-from azureproject.get_token import get_token
 
 from restaurant_review.models import Restaurant, Review
 
