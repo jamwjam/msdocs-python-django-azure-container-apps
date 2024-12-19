@@ -8,18 +8,17 @@ This Python web app repo can also be used in other ways:
 
 * You can run the web app locally in a virtual environment. Make sure to define *.env* file with environment settings.
 
-    * In the `.env` file, fill in a secret value for `SECRET_KEY`. You can use this command to generate an appropriate value for your product deployment:
+  * In the `.env` file, fill in a secret value for `SECRET_KEY`. You can use this command to generate an appropriate value for your product deployment:
 
     ```shell
     python -c 'import secrets; print(secrets.token_hex())'
     ```
 
-
-* You can create a container locally and run it in Docker locally. You'll need Docker Desktop installed. For this scenario, set REMOTE_POSTGRESQL=1 in *.env* file to point to a PostgreSQL instance. See the *.env.example* file for details.
+* You can create a container locally and run it in Docker locally. You need Docker Desktop installed. For this scenario, set REMOTE_POSTGRESQL=1 and other environment variables in a *.env* file to point to a PostgreSQL server instance in Azure. You also need to create an application service principal, add it as a PostgreSQL ROLE to the server, and grant it necessary permissions on the database. See the *.env.example* file for details.
 
   ```bash
   docker build --file Dockerfile --tag pythoncontainer:latest .
-  docker run -it --env-file .env --publish 5000:5000/tcp pythoncontainer:latest
+  docker run -it --env-file .env --publish 8000:8000/tcp pythoncontainer:latest
   ```
 
   If you want to use PostgreSQL instance locally, you add `--add-host` to the Docker command. For more information, see the [Docker run](https://docs.docker.com/engine/reference/commandline/run/) command. For an example of how to do this with MongoDB, see [Build and test a containerized Python web app locally](https://docs.microsoft.com/azure/developer/python/tutorial-containerize-deploy-python-web-app-azure-02).
@@ -50,10 +49,16 @@ The [requirements.txt](./requirements.txt) has the following packages:
 The steps to do this are covered more completely in the tutorial [Deploy a Python web app on Azure Container Apps with GitHub Actions](https://learn.microsoft.com/azure/developer/python/tutorial-deploy-python-web-app-azure-container-apps-01). Briefly, here are the steps:
 
 1. Fork and then clone locally.
+1. Create an Azure Container Registry.
 1. Build a container image from the repo.
-1. Create a PostgreSQL Flexible Server instance.
+1. Create an Azure Database for PostgreSQL Flexible Server instance.
+1. Make your Azure user account a Microsoft Entra administrator on the server.
 1. Create a database on the server.
+1. Create a user-assigned managed identity.
+1. Add the managed identity as a ROLE on the PostgreSQL server.
+1. Assign the managed identity PostgreSQL permissions on the database.
 1. Deploy the web app container to Azure Container Apps.
+1. Migrate and create database schema by connecting to the container app and issuing the `python manage.py migrate` command.
 1. Configure continuous deployment.
 
-See the [create_resources.sh](./create_resources.sh) Bash script for automating the creation of these steps.
+See the [create_resources.sh](./create_resources.sh) Bash script for automating the creation of these steps. For best results, run the script in Azure Cloud Shell.
